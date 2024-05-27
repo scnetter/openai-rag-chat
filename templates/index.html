@@ -1,0 +1,43 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RAG Chatbot</title>
+</head>
+<body>
+    <h1>Let's talk!</h1>
+    <div id="chatbox">
+        <div id="messages"></div>
+        <input type="text" id="user-input" placeholder="Type your message here...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const userInput = document.getElementById('user-input').value;
+            const messagesDiv = document.getElementById('messages').value;
+
+            const userMessage = document.createElement('div');
+            userMessage.textContent = 'You: ' + userInput;
+            messagesDiv.appendChild(userMessage);
+
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: userInput})
+            })
+                .then(response => response.json())
+                .then( data => {
+                    const botMessage = document.createElement('div');
+                    botMessage.textContent = 'Bot: ' + data.response;
+                    messagesDiv.appendChild(botMessage);
+                });
+
+            document.getElementById('user-input').value = '';
+        }
+    </script>
+</body>
+</html>
