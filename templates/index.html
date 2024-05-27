@@ -1,12 +1,26 @@
-<!-- templates/index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RAG Chatbot</title>
+    <title>Chatbot</title>
+    <style>
+        #chatbox {
+            width: 300px;
+            margin: 0 auto;
+        }
+        #messages {
+            border: 1px solid #ccc;
+            height: 200px;
+            overflow-y: scroll;
+            padding: 5px;
+        }
+        .message {
+            margin: 5px 0;
+        }
+    </style>
 </head>
 <body>
-    <h1>Let's talk!</h1>
+    <h1>Chat with our Bot!</h1>
     <div id="chatbox">
         <div id="messages"></div>
         <input type="text" id="user-input" placeholder="Type your message here...">
@@ -14,29 +28,38 @@
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelector("button").addEventListener("click", sendMessage);
+        });
+
         function sendMessage() {
             const userInput = document.getElementById('user-input').value;
-            const messagesDiv = document.getElementById('messages').value;
+            const messagesDiv = document.getElementById('messages');
 
-            const userMessage = document.createElement('div');
-            userMessage.textContent = 'You: ' + userInput;
-            messagesDiv.appendChild(userMessage);
+            if (userInput.trim() !== "") {
+                const userMessage = document.createElement('div');
+                userMessage.className = 'message';
+                userMessage.textContent = 'You: ' + userInput;
+                messagesDiv.appendChild(userMessage);
 
-            fetch('/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ message: userInput})
-            })
+                fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: userInput })
+                })
                 .then(response => response.json())
-                .then( data => {
+                .then(data => {
                     const botMessage = document.createElement('div');
+                    botMessage.className = 'message';
                     botMessage.textContent = 'Bot: ' + data.response;
                     messagesDiv.appendChild(botMessage);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight; // Scroll to the bottom
                 });
 
-            document.getElementById('user-input').value = '';
+                document.getElementById('user-input').value = '';
+            }
         }
     </script>
 </body>
