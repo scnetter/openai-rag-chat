@@ -12,12 +12,12 @@ def index():
 def chat():
     user_message = request.json.get('message')
     # Process the user message and generate a response
-    bot_response= process_message(response)
+    bot_response= process_message(user_message)
     return jsonify({'response': bot_response})
 
 def process_message(response):
     # Replace with OpenAI methods.
-    return f"Echo: {message}"
+    return f"Echo: {response}"
 
 if __name__ == '__main__':
     app.run(debug=True)
